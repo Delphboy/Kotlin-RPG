@@ -1,5 +1,9 @@
 import Screens.MainMenuScreen
 import Screens.ScreenIF
+import globals.height
+import globals.scene
+import globals.width
+import globals.window
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Group
@@ -20,19 +24,21 @@ import javafx.scene.layout.Pane
 
 
 
+object globals
+{
+    public val width = 1280.0
+    public val height = 900.0
+    public var scene: Scene = Scene(MainMenuScreen(gc), width, height)
+    public var window: Stage = Stage()
+}
 
-public val width = 1280.0
-public val height = 900.0
-
-private val canvas = Canvas(width, height)
+private val canvas = Canvas(globals.width, globals.height)
 private val gc = canvas.graphicsContext2D
-public var scene: Scene = Scene(MainMenuScreen(gc), width, height)
-public var window: Stage = Stage()
 
 /**
  * Update the screen being displayed to the user
  */
-fun updateScreen(newParent: ScreenIF)
+public fun updateScreen(newParent: ScreenIF)
 {
     val oldParent = scene.root
     val oldPane = oldParent as Pane
@@ -44,7 +50,6 @@ fun updateScreen(newParent: ScreenIF)
 
 class Main : Application()
 {
-    val world: World = World(100, 100)
     val root: Group = Group()
     val scene: Scene = Scene(root)
 
