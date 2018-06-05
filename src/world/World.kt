@@ -2,20 +2,25 @@ package world
 
 import Screens.ScreenComponents.StatsView
 import javafx.scene.canvas.GraphicsContext
+import world.Characters.Character
+import world.Characters.Player
 
 class World
 {
-    lateinit var worldMap: Array<Array<Tile>>
+    public lateinit var worldMap: Array<Array<Tile>>
+    val characters: ArrayList<Character> = ArrayList()
 
     constructor(gc: GraphicsContext)
     {
         generateBaseMap()
+        characters.add(Player(gc))
     }
 
     /**
      * Populate the world array with grass tiles
      */
-    fun generateBaseMap() {
+    fun generateBaseMap()
+    {
         worldMap = Array((globals.width.toInt() / tileWidthPx), {
             Array((globals.height.toInt() / tileHeightPx), {
                 Tile(TileType.GRASS, false)

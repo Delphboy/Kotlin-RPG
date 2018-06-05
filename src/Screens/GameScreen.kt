@@ -26,11 +26,6 @@ class GameScreen : ScreenIF, Pane
 
         children.add(worldView)
         children.add(statsView)
-
-        for(child in children)
-        {
-            println("Child: $child (X:" + child.layoutX + " Y:" + child.layoutY )
-        }
     }
 
     override fun killScreen()

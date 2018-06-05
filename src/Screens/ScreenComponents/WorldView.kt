@@ -1,21 +1,32 @@
 package Screens.ScreenComponents
 
-import Screens.GameScreen
-import javafx.event.EventHandler
-import javafx.scene.canvas.Canvas
+import javafx.animation.AnimationTimer
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.control.Button
 import javafx.scene.layout.Pane
-import javafx.scene.text.Font
-import updateScreen
+import world.Characters.Player
 import world.World
+import com.oracle.util.Checksums.update
 
-class WorldView : ComponentIF, Pane
+
+
+class WorldView(gc: GraphicsContext) : ComponentIF, Pane()
 {
-    constructor(gc: GraphicsContext) : super()
+    val world: World = World(gc)
+    var gameLoopTimer: AnimationTimer = object : AnimationTimer()
     {
-        val world: World = World(gc)
+        override fun handle(l: Long)
+        {
+            for (c in world.characters)
+            {
+                c.move()
+            }
+        }
+    }
+
+    init
+    {
         world.renderWorld(gc)
+        gameLoopTimer.start()
         children.add(gc.canvas)
     }
 
