@@ -1,0 +1,4 @@
+package Screens
+
+class StatsView
+{}
