@@ -38,7 +38,7 @@ private val gc = canvas.graphicsContext2D
 /**
  * Update the screen being displayed to the user
  */
-public fun updateScreen(newParent: ScreenIF)
+fun updateScreen(newParent: ScreenIF)
 {
     val oldParent = scene.root
     val oldPane = oldParent as Pane
@@ -73,10 +73,6 @@ class Main : Application()
             System.exit(1)
         }
 
-        window.addEventFilter(KeyEvent.KEY_PRESSED) { ke ->
-            inputProc(ke.code)
-        }
-
         window.title = "RPG"
         window.isResizable = false
         window.initStyle(StageStyle.DECORATED)
@@ -85,32 +81,4 @@ class Main : Application()
 
         window.show()
     }
-
-    /**
-     * Handle keyboard inputs
-     */
-    fun inputProc(inp: KeyCode)
-    {
-        when (inp)
-        {
-            KeyCode.W ->
-            {
-                print("Up")
-            }
-            KeyCode.A ->
-            {
-                print("Left")
-            }
-            KeyCode.S ->
-            {
-                print("Down")
-            }
-            KeyCode.D ->
-            {
-                print("Right")
-            }
-            else -> println("Unhandled Key press: " + inp)
-        }
-    }
-
 }
