@@ -14,6 +14,7 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
     var animationFrame: Int = 1
     var dir = direction.UP
     var previousDir = dir
+    var animationTimer: Int = 65    //milliseconds per frame of animation
 
     open var spriteSheet = ImageIO.read(File("resources/characters/rad.png"))
 
@@ -70,10 +71,10 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
         {
             when(dir)
             {
-                direction.UP -> if (isInBounds()) y -= tileHeightPx / 4
-                direction.DOWN -> if (isInBounds()) y += tileHeightPx / 4
-                direction.LEFT -> if (isInBounds()) x -= tileWidthPx / 4
-                direction.RIGHT -> if (isInBounds()) x += tileWidthPx / 4
+                direction.UP -> if (isInBounds()) y -= tileHeightPx / 8
+                direction.DOWN -> if (isInBounds()) y += tileHeightPx / 8
+                direction.LEFT -> if (isInBounds()) x -= tileWidthPx / 8
+                direction.RIGHT -> if (isInBounds()) x += tileWidthPx / 8
             }
 
             if(animationFrame < 4)
@@ -118,7 +119,7 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
     }
 
     /**
-     * Render the tiles around the character (3x3 grid) 
+     * Render the tiles around the character (3x3 grid)
      */
     fun renderTile(tileX: Int, tileY: Int)
     {

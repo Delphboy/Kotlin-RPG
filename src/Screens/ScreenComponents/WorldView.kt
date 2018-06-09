@@ -18,7 +18,7 @@ class WorldView(gc: GraphicsContext) : ComponentIF, Pane()
             for (c in world.characters)
             {
                 // 1 * 1000000 = 1 millisecond
-                if(System.nanoTime() - lastAnimationTime >= (60 * 1000000))
+                if(System.nanoTime() - lastAnimationTime >= (c.animationTimer * 1000000))
                 {
                     c.move()
                     lastAnimationTime = System.nanoTime()
