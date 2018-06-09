@@ -1,9 +1,8 @@
 package world.Characters
 
-import com.sun.org.apache.xpath.internal.operations.Bool
+import globals
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.image.Image
 import world.*
 import java.awt.image.BufferedImage
 import java.io.File
@@ -23,18 +22,26 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
     var majika: Int = 100
     var gold: Int = 100
 
-    fun isInBounds(): Boolean
+    /**
+     * return whether or not the Character is within the World Bounds
+     */
+    private fun isInBounds(): Boolean
     {
-        val isBound: Boolean = (y / tileHeightPx in (1..(globals.height.toInt() / tileHeightPx))) && (x / tileWidthPx in (1..(globals.width.toInt() / tileWidthPx)))
-        return isBound
+        return (y / tileHeightPx in (1..(globals.height.toInt() / tileHeightPx))) && (x / tileWidthPx in (1..(globals.width.toInt() / tileWidthPx)))
     }
 
-    fun isInRenderBounds(): Boolean
+    /**
+     * return whether or not the Character is within the Screen Bounds (ie Can the player see the Character
+     */
+    private fun isInRenderBounds(): Boolean
     {
-        val isRender: Boolean = (y / tileHeightPx in (0..(globals.height.toInt() / tileHeightPx))) && (x / tileWidthPx in (0..(globals.width.toInt() / tileWidthPx)))
-        return isRender
+        return (y / tileHeightPx in (0..(globals.height.toInt() / tileHeightPx))) && (x / tileWidthPx in (0..(globals.width.toInt() / tileWidthPx)))
     }
 
+    /**
+     * Control the Character's movement
+     * Randomly pick a direction and move the character in that direction
+     */
     fun move()
     {
         fun ClosedRange<Int>.random() =
@@ -48,13 +55,12 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
             3 -> move(direction.LEFT)
             4 -> move(direction.RIGHT)
         }
-//        move(direction.LEFT)
     }
 
     /**
-     * Update the player's position and animation
+     * Move the Character in a specific direction
      */
-    fun move(dir: direction)
+    private fun move(dir: direction)
     {
         if(dir != this.dir)
         {
@@ -62,19 +68,6 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
         }
         else
         {
-            println("$x:$y")
-            for(i in (x / tileWidthPx) - 1..(x / tileWidthPx) + 1)
-            {
-                for(j in (y  / tileHeightPx)-1..(y / tileHeightPx)+1)
-                {
-                    val tile: BufferedImage = tileTypeToImage[worldMap[i][j].type]!!
-                    val tileImage = SwingFXUtils.toFXImage(tile, null)
-                    gc.drawImage(tileImage, (i).toDouble(), j.toDouble(), tileWidthPx.toDouble(), tileHeightPx.toDouble())
-                    println("$tileImage at: $i, $j")
-                }
-            }
-            println("\n")
-
             when(dir)
             {
                 direction.UP -> if (isInBounds()) y -= tileHeightPx / 4
@@ -95,14 +88,12 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
     fun render()
     {
         var renderX = 0
-        var renderY = 0
-
-        when(dir)
+        var renderY = when(dir)
         {
-            direction.UP -> renderY = 96
-            direction.DOWN -> renderY = 0
-            direction.LEFT -> renderY = 32
-            direction.RIGHT -> renderY = 64
+            direction.UP -> 96
+            direction.DOWN -> 0
+            direction.LEFT -> 32
+            direction.RIGHT -> 64
         }
 
         when(animationFrame)
@@ -112,15 +103,34 @@ abstract class Character(var x: Int, var y: Int, val gc: GraphicsContext)
             3 -> renderX = 64
         }
 
-        //Render Sprite
+        //Render Sprite and Tile
         if(isInRenderBounds())
         {
+            //tile
+            renderTile((x / tileWidthPx), (y / tileHeightPx))
+
+            //sprite
             val img = SwingFXUtils.toFXImage(spriteSheet, null)
             gc.drawImage(img, renderX.toDouble(), renderY.toDouble(), 32.0, 32.0,
                     x.toDouble(), y.toDouble(), tileWidthPx.toDouble(), tileHeightPx.toDouble())
-
-            println("Rendering $this: $x, $y")
         }
 
     }
+
+    /**
+     * Render the tiles around the character (3x3 grid) 
+     */
+    fun renderTile(tileX: Int, tileY: Int)
+    {
+        for(i in tileX - 1..tileX + 1)
+        {
+            for(j in tileY - 1..tileY + 1)
+            {
+                val tile: BufferedImage = tileTypeToImage[worldMap[tileX][tileY].type]!!
+                val tileImage = SwingFXUtils.toFXImage(tile, null)
+                gc.drawImage(tileImage, (i * tileWidthPx).toDouble(), (j * tileHeightPx).toDouble(), tileWidthPx.toDouble(), tileHeightPx.toDouble())
+            }
+        }
+    }
+
 }
